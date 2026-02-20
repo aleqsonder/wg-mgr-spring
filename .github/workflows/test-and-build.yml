@@ -35,8 +35,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set image tag
+        run: echo "IMAGE_TAG=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV
+
       - name: Build and push the backend image
         uses: docker/build-push-action@v5
+        env:
+          IMAGE: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.repository }}
         with:
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.repository_name }}:latest
+          tags: |
+            ${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
+            ${{ env.IMAGE }}:latest
