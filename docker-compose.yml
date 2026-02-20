@@ -1,0 +1,26 @@
+services:
+  main:
+    build: .
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - WGMGR_DB_CONN_STR=postgresql://db:5432/vpn
+    ports:
+      - ${WGMGR_SPRING_HOST_PORT:-8177}:8177
+    depends_on:
+      - db
+  
+  db:
+    image: postgres:18
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB=vpn
+      - PGDATA=/var/lib/pgsql
+    volumes:
+      - ./initdb.d:/docker-entrypoint-initdb.d
+      - pgdata:/var/lib/pgsql
+
+volumes:
+  pgdata:
+  
