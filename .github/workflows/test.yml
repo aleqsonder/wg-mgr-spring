@@ -1,0 +1,26 @@
+name: Test the application
+on:
+  workflow_call:
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - .devcontainer/**
+      - .github/**
+      - '**.gitattributes'
+      - '**.gitignore'
+      - openapi.yml # now used only as a doc
+      - '**.md'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Install JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Module tests for the Spring backend service
+        run: mvn -ff -e -Dtest=VpnUserServiceTest test
